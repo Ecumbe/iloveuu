@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corazón</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="star-canvas"></canvas>
+<div class="main-content">
+  <div class="mensaje-principal brillo">Hola ojitos preciosos</div>
+  <button class="heart-btn" id="bubble-btn">
+    <svg width="64" height="64" viewBox="0 0 60 60">
+      <path d="M30 50 L12 32 Q6 24 15 17 Q24 10 30 18 Q36 10 45 17 Q54 24 48 32 Z"
+            fill="#ff69b4" stroke="#e75480" stroke-width="2"/>
+    </svg>
+  </button>
+  <div class="mensaje-secundario brillo">presiona el boton varias veces</div>
+  <div id="bubbles-container"></div>
+</div>
+
+<audio id="bg-music" src="musica.mp3" loop></audio>
+
+<script>
+const bubbleTexts = [
+  "💖 ¡Eres la Inge más Linda!", "✨ Qué bonitos ojos tienes 🌈", "🥰 Tu sonrisa es increíble!",
+  "🌸 Eres un solcito en mi día", "😍 Me encantas cada día más", "🌟 Te Quiero",
+  "😻 ¡tu inteligencia me encanta!", "💐 Gracias por existir", "🦋 te quiero comer a besos",
+  "🍭 Ricura", "🎶 Tus gemidos serán mi canción favorita", "🌷 Eres mi persona favorita",
+  "🫶 Siempre pienso en ti", "🌞 la mamá más linda", "💌 Me haces muy feliz",
+  "😈 portémonos muy mal 🔥", "🔥 tengo ganas de ti 😈"
+];
+
+let availableBubbles = bubbleTexts.slice();
+const music = document.getElementById('bg-music');
+let musicPlaying = false;
+
+function randomBetween(a, b) {
+  return Math.random() * (b - a) + a;
+}
+
+function createBubble(text, x, y) {
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble-text brillo';
+  bubble.innerText = text;
+  bubble.style.left = x + 'px';
+  bubble.style.top = y + 'px';
+
+  const angle = ((Math.random() < 0.5 ? 1 : -1) * (Math.PI / 2) + randomBetween(-Math.PI / 6, Math.PI / 6));
+
+  const margin = 20;
+  const maxDistX = Math.min(x - margin, window.innerWidth - x - margin);
+  const maxDistY = Math.min(y - margin, window.innerHeight - y - margin);
+  const maxDistance = Math.min(maxDistX, maxDistY);
+
+  const distance = randomBetween(60, maxDistance * 0.99);
+
+  const dx = Math.cos(angle) * distance;
+  const dy = Math.sin(angle) * distance;
+
+  const initialAnimationDuration = 1000;
+  const fadeOutAnimationDuration = 700;
+
+  bubble.animate([
+    { transform: 'translate(0,0) scale(0)', opacity: 0 },
+    { offset: 0.1, transform: 'translate(0,0) scale(0.7)', opacity: 0.9 },
+    { transform: `translate(${dx}px,${dy}px) scale(1)`, opacity: 1 }
+  ], {
+    duration: initialAnimationDuration,
+    easing: 'cubic-bezier(.4,.7,.5,1)'
+  });
+
+  setTimeout(() => {
+    bubble.animate([
+      { transform: `translate(${dx}px,${dy}px) scale(1)`, opacity: 1 },
+      { transform: `translate(${dx * 1.05}px,${dy * 1.05}px) scale(1.05)`, opacity: 0 }
+    ], {
+      duration: fadeOutAnimationDuration,
+      easing: 'ease-in'
+    });
+    setTimeout(() => bubble.remove(), fadeOutAnimationDuration);
+  }, initialAnimationDuration);
+
+  document.getElementById('bubbles-container').appendChild(bubble);
+}
+
+function fadeInMusic(duration = 3000) {
+  const startTime = Date.now();
+
+  function step() {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    music.volume = 0.5 + 0.5 * progress;
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  }
+
+  step();
+}
+
+document.getElementById('bubble-btn').addEventListener('click', function(e) {
+  const btn = e.currentTarget;
+  const rect = btn.getBoundingClientRect();
+
+  const offsetX = -1.50 * rect.width;
+  const centerX = rect.left + rect.width / 15 + offsetX + window.scrollX;
+  const centerY = rect.top + rect.height / 15 + window.scrollY;
+
+  if (!musicPlaying) {
+    music.volume = 0.3;       // volumen inicial ANTES de play
+    music.play();
+    fadeInMusic(3000);
+    musicPlaying = true;
+  }
+
+  if (availableBubbles.length === 0) {
+    availableBubbles = bubbleTexts.slice();
+  }
+
+  const idx = Math.floor(Math.random() * availableBubbles.length);
+  const text = availableBubbles.splice(idx, 1)[0];
+  createBubble(text, centerX, centerY);
+});
+
+// Pausar la música si la pestaña se oculta y reanudar si se muestra
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (!music.paused) music.pause();
+  } else {
+    if (musicPlaying && music.paused) music.play();
+  }
+});
+</script>
+
+<script>
+// Estrellas más vivas y rápidas
+const canvas = document.getElementById('star-canvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  createStars();
+});
+
+function createStars() {
+  stars = [];
+  const STAR_COUNT = Math.floor(window.innerWidth * window.innerHeight / 1500);
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.3 + 0.7,
+      alpha: 0,
+      targetAlpha: Math.random() * 0.7 + 0.3,
+      speed: Math.random() * 0.05 + 0.02,
+      timer: Math.random() * 1500
+    });
+  }
+}
+createStars();
+
+function animateStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let star of stars) {
+    star.timer -= 16;
+    if (star.timer < 0) {
+      star.targetAlpha = Math.random() * 0.7 + 0.3;
+      star.timer = Math.random() * 1500 + 600;
+    }
+    star.alpha += (star.targetAlpha - star.alpha) * star.speed * 8;
+    ctx.save();
+    ctx.globalAlpha = star.alpha;
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
+    ctx.fillStyle = "#fff";
+    ctx.shadowColor = "#fff";
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.restore();
+  }
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+</script>
+</body>
+</html>

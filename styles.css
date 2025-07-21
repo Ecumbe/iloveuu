@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Fredoka+One&display=swap');
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  max-width: unset;
+  margin: 0 auto;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background: #0a1026;
+  position: relative;
+  max-width: unset;
+  margin: 0 auto;
+}
+
+#star-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  max-width: unset;
+  min-width: 100vw;
+  min-height: 100vh;
+  pointer-events: none;
+}
+
+.main-content {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 0 8vw;
+}
+
+.heart-btn {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(180deg, #fdfbff 70%, #e6e7e9 100%);
+  border: 2.5px solid #bfc2c7;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 18px #ffb6e6,
+    0 2px 0 #b0b0b0,
+    0 8px 24px #0002,
+    inset 0 2px 12px #fff6,
+    inset 0 -4px 16px #e6e7e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 0.15s, background 0.15s;
+  outline: none;
+  margin: 0 auto 18px auto;
+  padding: 0;
+  pointer-events: auto;
+  font-size: 1.2rem;
+  user-select: none;
+  position: relative;
+}
+
+.heart-btn svg {
+  display: block;
+  z-index: 1;
+  width: 48px;
+  height: 48px;
+}
+
+.mensaje-principal {
+  font-family: 'Fredoka One', 'Baloo 2', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+  font-size: 2rem;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 2px 8px #0008;
+  margin-bottom: 18px;
+  margin-top: 0;
+  text-align: center;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  pointer-events: none;
+  word-break: break-word;
+  max-width: 90vw;
+}
+
+.mensaje-secundario {
+  font-family: 'Fredoka One', 'Baloo 2', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+  font-size: 1.1rem;
+  color: #fff;
+  opacity: 0.85;
+  text-shadow: 0 1px 6px #0007;
+  margin-top: 10px;
+  text-align: center;
+  pointer-events: none;
+  word-break: break-word;
+  max-width: 90vw;
+}
+
+.brillo {
+  filter: drop-shadow(0 0 8px #fff8) drop-shadow(0 0 16px #ffb6e6);
+  animation: brillo-anim 1.8s infinite alternate;
+}
+
+@keyframes brillo-anim {
+  0% { filter: drop-shadow(0 0 8px #fff8) drop-shadow(0 0 16px #ffb6e6); }
+  100% { filter: drop-shadow(0 0 18px #fff) drop-shadow(0 0 32px #ffb6e6); }
+}
+
+.bubble-text {
+  position: absolute;
+  font-family: 'Fredoka One', 'Baloo 2', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+  font-size: 1.1rem;
+  color: #fff;
+  background: rgba(255, 105, 180, 0.92);
+  border-radius: 2em;
+  padding: 0.32em 1em;
+  pointer-events: none;
+  white-space: pre-line;
+  box-shadow: 0 2px 12px #ffb6e6, 0 0 0 2px #fff3;
+  text-shadow: 0 2px 8px #e75480, 0 0 8px #fff;
+  opacity: 1;
+  will-change: transform, opacity;
+  z-index: 10;
+  max-width: 80vw;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  word-break: break-word;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .main-content {
+    padding: 0 2vw;
+  }
+  .mensaje-principal {
+    font-size: 1.3rem;
+  }
+  .mensaje-secundario {
+    font-size: 0.95rem;
+  }
+  .heart-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+  }
+  .heart-btn svg {
+    width: 36px;
+    height: 36px;
+  }
+  .bubble-text {
+    font-size: 0.95rem;
+    padding: 0.22em 0.7em;
+    max-width: 90vw;
+  }
+}
